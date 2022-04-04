@@ -7,6 +7,8 @@ function App() {
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
+  const [data, setData] = useState({})
   
 
   const fetchUsers = () => {
@@ -23,6 +25,21 @@ function App() {
       })
   }
 
+  const handleEdit = (id, title, body) => {
+    setIsEditing(true)
+    setData({
+      id,
+      title,
+      body
+    })
+  }
+
+  const deleteUsers = (id) => {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
   useEffect(() => {
     fetchUsers()
   }, [])
@@ -30,7 +47,7 @@ function App() {
   return (
     <div className='App'>
       <h1>Random Users</h1>
-      <Form userId={1} />
+      <Form userId={1} isEditing={isEditing} data={data} />
       <br />
       <br />
       {hasError ? <p>{errorMessage}</p> : null}
@@ -41,6 +58,8 @@ function App() {
               <li key={id}>
                 <p>Title: {title}</p>
                 <p>Body: {body}</p>
+                <button onClick={() => handleEdit(id, title, body)}>Edit</button>
+                <button onClick={() => deleteUsers(id)}>Delete</button>
               </li>
               <hr />
             </>

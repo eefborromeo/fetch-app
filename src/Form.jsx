@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const Form = ({ userId }) => {
+const Form = ({ userId, isEditing, data }) => {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
 
@@ -21,9 +21,32 @@ const Form = ({ userId }) => {
     })
   }
 
+  const updateUsers = (e) => {
+    e.preventDefault();
+    fetch(`https://jsonplaceholder.typicode.com/posts/${data.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...data,
+        title,
+        body,
+        userId
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+  }
+
+  useEffect(() => {
+    setTitle(data.title)
+    setBody(data.body)
+  }, [isEditing])
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={isEditing ? updateUsers : handleSubmit}>
         <h3>Create Post</h3>
         <div>userId {userId}</div>
         <div>
