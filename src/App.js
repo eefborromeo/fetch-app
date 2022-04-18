@@ -63,14 +63,14 @@ function App() {
     setKeyword(value)
   }
 
-  const handleEdit = (id, title, body) => {
-    setIsEditing(true)
-    setData({
-      id,
-      title,
-      body
-    })
-  }
+  // const handleEdit = (id, title, body) => {
+  //   setIsEditing(true)
+  //   setData({
+  //     id,
+  //     title,
+  //     body
+  //   })
+  // }
 
   const deleteUsers = (id) => {
     fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
@@ -83,7 +83,12 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (inStock) {
+    if (inStock && keyword) {  
+      const filteredItems = transformedData.filter(
+        (item) => (item.stocked && keyword.includes(item.name)) || typeof item === 'string'
+      )
+      setItems(filteredItems)
+    } else if (inStock) {
       const filteredItems = transformedData.filter(
         (item) => item.stocked || typeof item === 'string'
       )
